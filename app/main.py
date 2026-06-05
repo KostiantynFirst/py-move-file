@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def move_file(command: str) -> None:
@@ -20,9 +21,14 @@ def move_file(command: str) -> None:
             if (parent_dir
                     and not os.path.isdir(parent_dir)
                     and not os.path.isfile(parent_dir)):
-                os.makedirs(parent_dir, exist_ok=True)
+                parts = parent_dir.split(os.sep)
+                for i in range(len(parts)):
+                    path = os.sep.join(parts[:i + 1])
+                    if not os.path.exists(path):
+                        os.mkdir(path)
 
             if os.path.exists(final_dest):
                 os.remove(final_dest)
 
-            os.rename(source, final_dest)
+            shutil.copy(source, final_dest)
+            os.remove(source)
